@@ -1,9 +1,12 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import './App.css'
 import Axios from "axios";
+import Cards from "./components/cards/cards"
+import axios from "axios";
 
 function App() {
-  const [values, setValues] = useState();
+  const [values, setValues] = useState()
+  const [listGames, setListGames] = useState()
 
   const handleChangeValues = (values) => {
     setValues(prevValue => ({
@@ -21,6 +24,12 @@ function App() {
       console.log(response)
     })
   }
+
+  useEffect(() => {
+    Axios.get("http://localhost:3001/getCards").then((response) => {
+      setListGames(response.data)
+    })
+  })
 
   return (
     <>
@@ -54,6 +63,17 @@ function App() {
             Cadastrar
           </button>
         </div>
+        { typeof listGames !== "undefined" && listGames.map((value) => {
+          return <Cards 
+                    key={value.idgames}
+                    listCard={listGames}
+                    setListCard={setListGames}
+                    id={value.id}
+                    name={value.name}
+                    cost={value.cost}
+                    category={value.category}
+                  ></Cards>
+        }) }
       </div>
     </>
   )
